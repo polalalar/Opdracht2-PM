@@ -54,7 +54,7 @@ int main ( ) {
     while (!invoer.eof()) {
         cout << vorigKarakter << " | " << karakter << " | " << karakterCounter << endl;
         if (vorigKarakter == '\n') {
-            uitvoer.put(vorigKarakter)
+            uitvoer.put(vorigKarakter);
         }
         if (karakter == vorigKarakter) {
             karakterCounter++;
