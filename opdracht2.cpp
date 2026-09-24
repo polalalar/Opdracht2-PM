@@ -39,8 +39,27 @@ int collatz(int nummer){
     return herhalingen;
 }
 
+void addNumber(int getal, ofstream &uitvoer){
+    int lengte;
+    int getalCopy = getal;
+    while (getal > 0){
+        lengte += 1;
+        getal /= 10;
+    }
+    for (int i = 0; i < lengte; i++){
+        int divide = 1;
+        for(int j = 1; j < lengte - i; j++){
+            divide *= 10;
+        }
+        int result = getalCopy / divide;
+        uitvoer.put(result + '0');
+        getalCopy -= result * divide; 
+    }
+}
+
 
 int main ( ) {
+
     infoblokje();
 
     ifstream invoer ("simpelinput.txt", ios::in);
@@ -61,8 +80,8 @@ int main ( ) {
         else {
             uitvoer.put(vorigKarakter);
             if (karakterCounter > 1) {
-                // Geen rekening gehouden met counter >= 10
-                uitvoer.put(karakterCounter + '0');
+                //rekening gehouden met counter >= 10
+                addNumber(karakterCounter, uitvoer);
             } // if
             karakterCounter = 1;
         } // else
