@@ -52,7 +52,7 @@ void addNumber(int getal, ofstream &uitvoer){
             divide *= 10;
         }
         int result = getalCopy / divide;
-        uitvoer.put(result + '0');
+        uitvoer.put(result + '0');// '0' for ASCII
         getalCopy -= result * divide; 
     }
 }
@@ -66,9 +66,10 @@ int main ( ) {
     ofstream uitvoer ("testoutput.txt", ios::out);
 
     char karakter = '@';
-    char vorigKarakter = 'a';
+    char vorigKarakter = '@';
     int karakterCounter = 1;
     karakter = invoer.get();
+    bool first_char = true;
 
     while (!invoer.eof()) {
         if (vorigKarakter == '\n') {
@@ -78,7 +79,13 @@ int main ( ) {
             karakterCounter++;
         } // if
         else {
-            uitvoer.put(vorigKarakter);
+            if (!first_char){//To stop the @ from being printed at the start
+                uitvoer.put(vorigKarakter);
+            }
+           
+            if (karakter >= '0' && karakter <= '9'){//Getal
+                uitvoer.put('\\');
+            }
             if (karakterCounter > 1) {
                 //rekening gehouden met counter >= 10
                 addNumber(karakterCounter, uitvoer);
@@ -87,6 +94,7 @@ int main ( ) {
         } // else
         vorigKarakter = karakter;
         karakter = invoer.get();
+        first_char = false;
     } // while
 
     invoer.close();
