@@ -25,6 +25,21 @@ void infoblokje( ) {
     cout << endl << endl;
 } // infoblokje
 
+int collatz(int nummer){
+    int herhalingen = 0;
+    while (nummer != 1){
+        cout << nummer << endl;
+        herhalingen += 1;
+        if (nummer % 2 == 0){//even
+            nummer /= 2;
+        }else{//uneven
+            nummer = nummer * 3 + 1;
+        }
+    }
+    return herhalingen;
+}
+
+
 int main ( ) {
     infoblokje();
 
