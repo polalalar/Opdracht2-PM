@@ -47,12 +47,11 @@ int main ( ) {
     ofstream uitvoer ("testoutput.txt", ios::out);
 
     char karakter = '@';
-    char vorigKarakter = '#';
+    char vorigKarakter = 'a';
     int karakterCounter = 1;
     karakter = invoer.get();
 
     while (!invoer.eof()) {
-        cout << vorigKarakter << " | " << karakter << " | " << karakterCounter << endl;
         if (vorigKarakter == '\n') {
             uitvoer.put(vorigKarakter);
         }
@@ -63,7 +62,7 @@ int main ( ) {
             uitvoer.put(vorigKarakter);
             if (karakterCounter > 1) {
                 // Geen rekening gehouden met counter >= 10
-                uitvoer.put( (char) karakterCounter);
+                uitvoer.put(karakterCounter + '0');
             } // if
             karakterCounter = 1;
         } // else
