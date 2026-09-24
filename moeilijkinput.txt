@@ -1,0 +1,14 @@
+Moeilijke testfile
+Hier staan wel cijfers en backslashes in.
+
+Kijk maar: 12345 1111 7&6***888ppp1024kkk27yyy
+
+En erg lang duurt 6171!
+Vervelend: 77671, 704511 en 270271.
+
+Of lastiger: \abc of zelfs \123 of \\ of
+nog vervelender: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ of zoiets.
+
+Uit de opgave: ABC11123ddd\efG\\\1
+
+En deze: 2147483647 of 2147483640

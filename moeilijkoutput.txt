@@ -1,0 +1,14 @@
+Moeilijke testfile
+Hier sta2n wel cijfers en backslashes in.
+
+Kijk ma2r: \1\2\3\4\5 \14 \7&\6*3\83p3\1\0\2\4k3\2\7y3
+
+En erg lang du2rt \6\1\7\1!
+Vervelend: \72\6\7\1, \7\0\4\5\12 en \2\7\0\2\7\1.
+
+Of lastiger: \\abc of zelfs \\\1\2\3 of \\2 of
+nog vervelender: \\35 of zoiets.
+
+Uit de opgave: ABC\13\2\3d3\\efG\\3\1
+
+En deze: \2\1\4\7\4\8\3\6\4\7 of \2\1\4\7\4\8\3\6\4\0
