@@ -40,7 +40,7 @@ int collatz(int nummer){
 }
 
 void addNumber(int getal, ofstream &uitvoer){
-    int lengte;
+    int lengte = 0;
     int getalCopy = getal;
     while (getal > 0){
         lengte += 1;
@@ -68,7 +68,7 @@ int main ( ) {
     int karakterCounter = 0;
     char karakter = invoer.get();
     char vorigKarakter = karakter;
-
+    uitvoer.put(karakter);
     while (!invoer.eof()) {
         if (karakter == vorigKarakter) {
             karakterCounter++;
@@ -77,10 +77,12 @@ int main ( ) {
             // if (karakter >= '0' && karakter <= '9'){ // Getal
             //     uitvoer.put('\\');
             // } // if
-            uitvoer.put(karakter);
+            
             if (karakterCounter > 1) {
                 addNumber(karakterCounter, uitvoer);
             } // if
+
+            uitvoer.put(karakter);
             karakterCounter = 1;
         } // else
         vorigKarakter = karakter;
