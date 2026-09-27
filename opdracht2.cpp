@@ -84,16 +84,16 @@ int main ( ) {
             karakterCounter++;
         } // if
         else {
-            if (vorigKarakter >= '0' && vorigKarakter <= '9'){ // Speciaal karakter
-                uitvoer.put('\\');
-            } // if
+           
             if (vorigKarakter == '\\') {
                 uitvoer.put('\\');
             } // if
             if (karakterCounter > 1) {
                 outputGetal(karakterCounter, uitvoer);
             } // if
-
+            if (karakter >= '0' && karakter <= '9'){ // Speciaal karakter
+                uitvoer.put('\\');
+            } // if
             uitvoer.put(karakter);
             karakterCounter = 1;
         } // else
