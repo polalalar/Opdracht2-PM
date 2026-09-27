@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <climits>
 using namespace std;
 
 // Print een infoblokje op het scherm
@@ -29,12 +30,14 @@ void infoblokje( ) {
 int collatz(int nummer){
     int herhalingen = 0;
     while (nummer != 1){
-        cout << nummer << endl;
         herhalingen += 1;
         if (nummer % 2 == 0){//even
             nummer /= 2;
         } // if
         else { // oneven
+            if (nummer >= INT_MAX / 3){
+                return -1;
+            }
             nummer = nummer * 3 + 1;
         } // else
     } // while
@@ -58,7 +61,6 @@ void addNumber(int getal, ofstream &uitvoer){
         getalCopy -= result * divide; 
     }
 }
-// collatz
 
 // Output een getal naar de uitvoerfile
 void outputGetal( int getal, ofstream &uitvoer) {
@@ -79,6 +81,8 @@ int main ( ) {
     char karakter = invoer.get();
     char vorigKarakter = karakter;
     uitvoer.put(karakter);
+    int collatz_getal = 0;
+
     while (!invoer.eof()) {
         if (karakter == vorigKarakter) {
             karakterCounter++;
@@ -92,8 +96,19 @@ int main ( ) {
                 outputGetal(karakterCounter, uitvoer);
             } // if
             if (karakter >= '0' && karakter <= '9'){ // Speciaal karakter
+                collatz_getal *= 10;
+                collatz_getal += karakter - '0';
                 uitvoer.put('\\');
             } // if
+            else if (collatz_getal > 0){
+                int herhalingen = collatz(collatz_getal);
+                if (herhalingen == -1){
+                    cout << "Voor " << collatz_getal << " wordt de waarde groter dan INT_MAX" << endl;
+                }else{
+                    cout << "Voor " << collatz_getal << " waren er " << herhalingen << " iteraties nodig om op 1 uit te komen!" << endl;
+                }
+                collatz_getal = 0;
+            }
             uitvoer.put(karakter);
             karakterCounter = 1;
         } // else
