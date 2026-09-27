@@ -1,0 +1,34 @@
+Deze file bevat geen cijfers, en ook geen backslashes.
+
+De Universiteit Leiden, ooit opgericht, is een van 
+Europa's meest vooraanstaande internationale 
+onderzoeksuniversiteiten (een wc-eendje). De universiteit heeft zeven 
+faculteiten in het alfa-, beta- en gammadomein, is gevestigd 
+in Leiden en Den Haag en heeft veel medewerkers en veel
+studenten. 
+
+Haar motto is Praesidium Libertatis - Bolwerk van Vrijheid.
+
+
+
+En dit: yyyyyyyyyyyyyyyyyyyyyy of ttttttt of
+of                                 of hhhhhhhhhh
+of %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% of $$$
+of zelfs ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((?
+
+Allemaal gelukt?
+
+Moeilijke testfile
+Hier staan wel cijfers en backslashes in.
+
+Kijk maar: 12345 1111 7&6***888ppp1024kkk27yyy
+
+En erg lang duurt 6171!
+Vervelend: 77671, 704511 en 270271.
+
+Of lastiger: \abc of zelfs \123 of \\ of
+nog vervelender: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ of zoiets.
+
+Uit de opgave: ABC11123ddd\efG\\\1
+
+En deze: 2147483647 of 2147483640
