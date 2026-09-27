@@ -25,6 +25,7 @@ void infoblokje( ) {
     cout << endl << endl;
 } // infoblokje
 
+// Bereken de collatzserie voor een nummer
 int collatz(int nummer){
     int herhalingen = 0;
     while (nummer != 1){
@@ -32,37 +33,27 @@ int collatz(int nummer){
         herhalingen += 1;
         if (nummer % 2 == 0){//even
             nummer /= 2;
-        }else{//uneven
+        } // if
+        else { // oneven
             nummer = nummer * 3 + 1;
-        }
-    }
+        } // else
+    } // while
     return herhalingen;
-}
+} // collatz
 
-void addNumber(int getal, ofstream &uitvoer){
-    int lengte;
-    int getalCopy = getal;
-    while (getal > 0){
-        lengte += 1;
-        getal /= 10;
-    }
-    for (int i = 0; i < lengte; i++){
-        int divide = 1;
-        for(int j = 1; j < lengte - i; j++){
-            divide *= 10;
-        }
-        int result = getalCopy / divide;
-        uitvoer.put(result + '0');// '0' for ASCII
-        getalCopy -= result * divide; 
-    }
-}
-
+// Output een getal naar de uitvoerfile
+void outputGetal( int getal, ofstream &uitvoer) {
+    if (getal >= 10) {
+        outputGetal((getal/10), uitvoer);
+    } // if
+    uitvoer.put('0' + (getal%10));
+} // outputGetal
 
 int main ( ) {
 
     infoblokje();
 
-    ifstream invoer ("simpelinput.txt", ios::in);
+    ifstream invoer ("moeilijkinput.txt", ios::in);
     ofstream uitvoer ("testoutput.txt", ios::out);
 
     int karakterCounter = 0;
@@ -74,12 +65,15 @@ int main ( ) {
             karakterCounter++;
         } // if
         else {
-            // if (karakter >= '0' && karakter <= '9'){ // Getal
-            //     uitvoer.put('\\');
-            // } // if
-            uitvoer.put(karakter);
+            if (vorigKarakter >= '0' && vorigKarakter <= '9'){ // Speciaal karakter
+                uitvoer.put('\\');
+            } // if
+            uitvoer.put(vorigKarakter);
+            if (vorigKarakter == '\\') {
+                uitvoer.put('\\');
+            } // if
             if (karakterCounter > 1) {
-                addNumber(karakterCounter, uitvoer);
+                outputGetal(karakterCounter, uitvoer);
             } // if
             karakterCounter = 1;
         } // else
