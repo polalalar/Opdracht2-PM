@@ -39,7 +39,26 @@ int collatz(int nummer){
         } // else
     } // while
     return herhalingen;
-} // collatz
+}
+
+void addNumber(int getal, ofstream &uitvoer){
+    int lengte = 0;
+    int getalCopy = getal;
+    while (getal > 0){
+        lengte += 1;
+        getal /= 10;
+    }
+    for (int i = 0; i < lengte; i++){
+        int divide = 1;
+        for(int j = 1; j < lengte - i; j++){
+            divide *= 10;
+        }
+        int result = getalCopy / divide;
+        uitvoer.put(result + '0');// '0' for ASCII
+        getalCopy -= result * divide; 
+    }
+}
+// collatz
 
 // Output een getal naar de uitvoerfile
 void outputGetal( int getal, ofstream &uitvoer) {
@@ -59,22 +78,23 @@ int main ( ) {
     int karakterCounter = 0;
     char karakter = invoer.get();
     char vorigKarakter = karakter;
-
+    uitvoer.put(karakter);
     while (!invoer.eof()) {
         if (karakter == vorigKarakter) {
             karakterCounter++;
         } // if
         else {
-            if (vorigKarakter >= '0' && vorigKarakter <= '9'){ // Speciaal karakter
-                uitvoer.put('\\');
-            } // if
-            uitvoer.put(vorigKarakter);
+           
             if (vorigKarakter == '\\') {
                 uitvoer.put('\\');
             } // if
             if (karakterCounter > 1) {
                 outputGetal(karakterCounter, uitvoer);
             } // if
+            if (karakter >= '0' && karakter <= '9'){ // Speciaal karakter
+                uitvoer.put('\\');
+            } // if
+            uitvoer.put(karakter);
             karakterCounter = 1;
         } // else
         vorigKarakter = karakter;

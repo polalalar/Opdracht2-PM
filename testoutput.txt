@@ -1,37 +1,14 @@
-Deze \3file \4bevat ge2n cijfers, en o2k ge2n backslashes.
+Moeilijke testfile
+Hier sta2n wel cijfers en backslashes in.
 
+Kijk ma2r: \1\2\3\4\5 \14 \7&\6*3\83p3\1\0\2\4k3\2\7y3
 
+En erg lang du2rt \6\1\7\1!
+Vervelend: \72\6\7\1, \7\0\4\5\12 en \2\7\0\2\7\1.
 
-De Universiteit Leiden, o2it opgericht, is e2n van 
+Of lastiger: \\abc of zelfs \\\1\2\3 of \\2 of
+nog vervelender: \\35 of zoiets.
 
-Europa's me2st vo2ra2nsta2nde internationale 
+Uit de opgave: ABC\13\2\3d3\\efG\\3\1
 
-onderzoeksuniversiteiten (e2n wc-e2ndje). De universiteit he2ft zeven 
-
-faculteiten in het alfa-, beta- en gam2adomein, is gevestigd 
-
-in Leiden en Den Ha2g en he2ft ve2l medewerkers en ve2l
-
-studenten. 
-
-
-
-Ha2r mot2o is Praesidium Libertatis - Bolwerk van Vrijheid.
-
-
-
-
-
-
-
-En dit: y22 of t7 of
-
-of 33of h10
-
-of %32 of $3
-
-of zelfs (118?
-
-
-
-Al2ema2l gelukt?
+En deze: \2\1\4\7\4\8\3\6\4\7 of \2\1\4\7\4\8\3\6\4\0
