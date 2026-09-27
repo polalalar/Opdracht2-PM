@@ -84,12 +84,6 @@ int main ( ) {
             karakterCounter++;
         } // if
         else {
-
-            // if (karakter >= '0' && karakter <= '9'){ // Getal
-            //     uitvoer.put('\\');
-            // } // if
-            
-
             if (vorigKarakter >= '0' && vorigKarakter <= '9'){ // Speciaal karakter
                 uitvoer.put('\\');
             } // if
