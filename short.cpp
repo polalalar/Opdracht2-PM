@@ -25,7 +25,7 @@
 // returns 0 automatically
 
 
-// V2 - 173
+// V2 - 173 | algoritme = 111
 
 // New compile command to remove #include
 // g++ -Wall -Wextra -include fstream -o run short.cpp
@@ -46,4 +46,28 @@
 //     }
 // }
 
-int main(){std::ifstream i("1.txt");std::ofstream o("2.txt");int c=0;char k,v;while(i.get(k)){if(c&&k!=v){if((v>47&&v<58)||v==92)o<<'\\';o.put(v);if(c>1)o<<c;c=0;}v=k;c++;}}
+// int main(){std::ifstream i("1.txt");std::ofstream o("2.txt");int c=0;char k,v;while(i.get(k)){if(c&&k!=v){if((v>47&&v<58)||v==92)o<<'\\';o.put(v);if(c>1)o<<c;c=0;}v=k;c++;}}
+
+
+// V3 - 125
+
+// New compile command to shorten initialization
+// g++ -Wall -Wextra -include fstream -D'F=std::ifstream i("1.txt");std::ofstream o("2.txt");' -o run short.cpp
+
+
+// int main(){
+//     F;
+//     int c=0;
+//     char k,v;
+//     while(i.get(k)){
+//         if(c&&k!=v){
+//             if((v>47&&v<58)||v==92)o<<'\\';
+//             o.put(v);
+//             if(c>1)o<<c;
+//             c=0;}
+//         v=k;
+//         c++;
+//     }
+// }
+
+int main(){F;int c=0;char k,v;while(i.get(k)){if(c&&k!=v){if((v>47&&v<58)||v==92)o<<'\\';o.put(v);if(c>1)o<<c;c=0;}v=k;c++;}}
