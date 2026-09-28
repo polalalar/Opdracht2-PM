@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <climits>
+#include <filesystem>
+#include <cmath>
 using namespace std;
 
 // Print een infoblokje op het scherm
@@ -76,19 +78,26 @@ int main ( ) {
 
     ifstream invoer ("moeilijkinput.txt", ios::in);
     ofstream uitvoer ("testoutput.txt", ios::out);
-
+    
     int karakterCounter = 0;
     char karakter = invoer.get();
     char vorigKarakter = karakter;
     uitvoer.put(karakter);
     int collatz_getal = 0;
+    int regels = 0;
 
     while (!invoer.eof()) {
         if (karakter == vorigKarakter) {
             karakterCounter++;
+            if (karakter >= '0' && karakter <= '9'){ // Speciaal karakter
+                collatz_getal *= 10;
+                collatz_getal += karakter - '0';
+            }
         } // if
         else {
-           
+            if (karakter == '\n'){
+            regels++;
+            }
             if (vorigKarakter == '\\') {
                 uitvoer.put('\\');
             } // if
@@ -115,9 +124,18 @@ int main ( ) {
         vorigKarakter = karakter;
         karakter = invoer.get();
     } // while
-
     invoer.close();
     uitvoer.close();
+
+    int invoer_size = filesystem::file_size("moeilijkinput.txt");
+    int uitvoer_size = filesystem::file_size("testoutput.txt");
+    cout << "Groote invoerfile " << invoer_size << " karakters, ";
+    cout << "uitvoerfile is " << uitvoer_size << " karakters, " << endl;
+    int compressieRatio = ceil( (double) uitvoer_size/invoer_size * 100);
+    
+    cout << "compressie-ratio; " << compressieRatio << "% en " << regels << " regels;" << endl;
+
+
 
     return 0;
 } // main
