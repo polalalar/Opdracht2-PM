@@ -35,7 +35,7 @@ int collatz(int nummer){
             nummer /= 2;
         } // if
         else { // oneven
-            if (nummer >= INT_MAX / 3){
+            if (nummer >= ((INT_MAX - 1)/ 3)+1){//Doing (x-1)/y + 1 makes the outcome ceil(x/y)
                 return -1;
             }
             nummer = nummer * 3 + 1;
@@ -103,7 +103,7 @@ int main ( ) {
             else if (collatz_getal > 0){
                 int herhalingen = collatz(collatz_getal);
                 if (herhalingen == -1){
-                    cout << "Voor " << collatz_getal << " wordt de waarde groter dan INT_MAX" << endl;
+                    cout << "Voor " << collatz_getal << " wordt de waarde groter dan INT_MAX!" << endl;
                 }else{
                     cout << "Voor " << collatz_getal << " waren er " << herhalingen << " iteraties nodig om op 1 uit te komen!" << endl;
                 }
