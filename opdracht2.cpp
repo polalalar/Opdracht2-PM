@@ -76,6 +76,15 @@ int main ( ) {
 
     infoblokje();
 
+    char antwoord = ' ';
+    cout << "Wil je een bestand coderen(Y) of decoderen(N), Y/N" << endl;
+    cin >> antwoord;
+    while (!(antwoord == 'y' ||antwoord == 'Y' || antwoord == 'n' || antwoord == 'N')){
+    cout << "Dat is geen optie!, ";
+    cout << "Wil je een bestand coderen(Y) of decoderen(N), Y/N" << endl;
+    cin >> antwoord;
+    }
+
     ifstream invoer ("moeilijkinput.txt", ios::in);
     ofstream uitvoer ("testoutput.txt", ios::out);
     
