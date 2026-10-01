@@ -1,9 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <climits>
-#include <filesystem>
-#include <cmath>
 using namespace std;
+
+// Note: function vs varable names guidelines?
 
 // Print een infoblokje op het scherm
 void infoblokje( ) {
@@ -46,103 +46,179 @@ int collatz(int nummer){
     return herhalingen;
 }
 
-void addNumber(int getal, ofstream &uitvoer){
-    int lengte = 0;
-    int getalCopy = getal;
-    while (getal > 0){
-        lengte += 1;
-        getal /= 10;
-    }
-    for (int i = 0; i < lengte; i++){
-        int divide = 1;
-        for(int j = 1; j < lengte - i; j++){
-            divide *= 10;
-        }
-        int result = getalCopy / divide;
-        uitvoer.put(result + '0');// '0' for ASCII
-        getalCopy -= result * divide; 
-    }
-}
-
-// Output een getal naar de uitvoerfile
-void outputGetal( int getal, ofstream &uitvoer) {
-    if (getal >= 10) {
-        outputGetal((getal/10), uitvoer);
+// Output de counter naar de uitvoerfile
+void outputCounter( int counter, ofstream &output , int &outputFileSize) {
+    if (counter >= 10) {
+        outputCounter((counter/10), output, outputFileSize);
     } // if
-    uitvoer.put('0' + (getal%10));
-} // outputGetal
+    output.put('0' + (counter%10));
+    outputFileSize++;
+} // outputCounter
 
+// Note: 
+void outputData( int fileLines, int inputFileSize, 
+                 int outputFileSize ) {
+    cout << "Grootte invoerfile " << inputFileSize << " karakters."
+         << endl;
+    cout << "Grootte uitvoerfile: " << outputFileSize << " karakters."
+         << endl;
+    int compresionRate = (outputFileSize*100)/(inputFileSize*100)*100;
+    
+    cout << "Compressie-ratio " << compresionRate << "%; " 
+         << fileLines << " regels." << endl;
+} // outputData
+
+// Codeer de inputfile naar de outputfile
+void encode( ifstream &input, ofstream &output ) {
+    // Note: comments
+    int karakterCounter = 0;
+    char karakter = input.get();
+    char vorigKarakter = karakter;
+
+
+    int collatzGetal = 0;
+
+    int inputFileSize = 1;
+    int outputFileSize = 0;
+    int fileLines = 0;
+    
+
+    while (!input.eof()) {
+        if (karakter == '\n') {
+            fileLines++;
+        } // if
+        if (karakter == vorigKarakter) {
+            karakterCounter++;
+            if (karakter >= '0' && karakter <= '9'){ // Getal
+                collatzGetal *= 10;
+                collatzGetal += karakter - '0';
+            } // if
+        } // if
+        else {
+            if (vorigKarakter == '\\') { // Backslash
+                output.put('\\');
+                outputFileSize++;
+            } // if
+            if (karakter >= '0' && karakter <= '9') { // Getal
+                collatzGetal *= 10;
+                collatzGetal += karakter - '0';
+                output.put('\\');
+                outputFileSize++;
+            } // if
+            output.put(vorigKarakter);
+            if (karakterCounter > 1) {
+                outputCounter(karakterCounter, output, outputFileSize);
+            } // if
+            outputFileSize++;
+            karakterCounter = 1;
+        } // else
+        vorigKarakter = karakter;
+        karakter = input.get();
+        inputFileSize++;
+    } // while
+    output.put(vorigKarakter);
+    outputFileSize += 2; // last character + EOF char
+    
+    inputFileSize -= fileLines;
+    outputFileSize -= fileLines;
+    fileLines++;
+
+    outputData(fileLines, inputFileSize, outputFileSize);
+} // encode
+
+// // Decodeer de inputfile naar de outputfile
+// void decode( ifstream &input, ofstream &output ) {
+//     // lees volgende karakter
+//     // print n keer karakter
+// } // decode
+
+// main
 int main ( ) {
 
     infoblokje();
 
     char antwoord = ' ';
-    cout << "Wil je een bestand coderen(Y) of decoderen(N), Y/N" << endl;
+    cout << "Wil je een bestand coderen(C) of decoderen(D)?" << endl;
     cin >> antwoord;
-    while (!(antwoord == 'y' ||antwoord == 'Y' || antwoord == 'n' || antwoord == 'N')){
-    cout << "Dat is geen optie!, ";
-    cout << "Wil je een bestand coderen(Y) of decoderen(N), Y/N" << endl;
-    cin >> antwoord;
-    }
+    // Check voor valide input? (c/C/d/D)
 
-    ifstream invoer ("moeilijkinput.txt", ios::in);
-    ofstream uitvoer ("testoutput.txt", ios::out);
-    
+    string inputFile = "";
+    string outputFile = "";
+
+    inputFile = "simpelinput.txt";
+    outputFile = "testoutput.txt";
+
+    // cout << "Wat is de naam van de input file?" << endl << "> ";
+    // cin >> inputFile;
+
+    // cout << "Wat is de naam van de output file?" << endl << "> ";
+    // cin >> outputFile;
+
+    ifstream input (inputFile, ios::in);
+    ofstream output (outputFile, ios::out);
+
+    // Coderen
+    if (antwoord == 'c' || antwoord == 'C'){
+        encode(input, output);
+    } // if
+
+    // Decoderen
+    else if (antwoord == 'd' || antwoord == 'D'){
+        cout << endl;
+        // decode(input, output);
+    } // else if
+
+/*    
     int karakterCounter = 0;
     char karakter = invoer.get();
     char vorigKarakter = karakter;
     uitvoer.put(karakter);
-    int collatz_getal = 0;
+    int collatzGetal = 0;
     int regels = 0;
 
     while (!invoer.eof()) {
         if (karakter == vorigKarakter) {
             karakterCounter++;
             if (karakter >= '0' && karakter <= '9'){ // Speciaal karakter
-                collatz_getal *= 10;
-                collatz_getal += karakter - '0';
-            }
+                collatzGetal *= 10;
+                collatzGetal += karakter - '0';
+            } // if
         } // if
         else {
             if (karakter == '\n'){
             regels++;
-            }
+            } // if
             if (vorigKarakter == '\\') {
                 uitvoer.put('\\');
             } // if
             if (karakterCounter > 1) {
                 outputGetal(karakterCounter, uitvoer);
             } // if
-            if (karakter >= '0' && karakter <= '9'){ // Speciaal karakter
-                collatz_getal *= 10;
-                collatz_getal += karakter - '0';
+            if (karakter >= '0' && karakter <= '9') { // Speciaal karakter
+                collatzGetal *= 10;
+                collatzGetal += karakter - '0';
                 uitvoer.put('\\');
             } // if
-            else if (collatz_getal > 0){
-                int herhalingen = collatz(collatz_getal);
-                if (herhalingen == -1){
-                    cout << "Voor " << collatz_getal << " wordt de waarde groter dan INT_MAX!" << endl;
-                }else{
-                    cout << "Voor " << collatz_getal << " waren er " << herhalingen << " iteraties nodig om op 1 uit te komen!" << endl;
-                }
-                collatz_getal = 0;
-            }
+            else if (collatzGetal > 0) {
+                int herhalingen = collatz(collatzGetal);
+                if (herhalingen == -1) {
+                    cout << "Voor " << collatzGetal << " wordt de waarde groter dan INT_MAX!" << endl;
+                } // if
+                else {
+                    cout << "Voor " << collatzGetal << " waren er " << herhalingen << " iteraties nodig om op 1 uit te komen!" << endl;
+                } // if
+                collatzGetal = 0;
+            } // else if
             uitvoer.put(karakter);
             karakterCounter = 1;
         } // else
         vorigKarakter = karakter;
         karakter = invoer.get();
     } // while
-    invoer.close();
-    uitvoer.close();
+*/
 
-    int invoer_size = filesystem::file_size("moeilijkinput.txt");
-    int uitvoer_size = filesystem::file_size("testoutput.txt");
-    cout << "Groote invoerfile " << invoer_size << " karakters, ";
-    cout << "uitvoerfile is " << uitvoer_size << " karakters, " << endl;
-    int compressieRatio = ceil( (double) uitvoer_size/invoer_size * 100);
-    
-    cout << "compressie-ratio; " << compressieRatio << "% en " << regels << " regels;" << endl;
+    input.close();
+    output.close();
 
 
 

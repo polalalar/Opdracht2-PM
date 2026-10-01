@@ -8,14 +8,14 @@
 //     char k,v;
 //     i.get(v);
 //     while (i.get(k)){
-//     if (k==v)c++;
-//     else{
-//     if((v>='0'&&v<='9')||v=='\\')u<<'\\';
-//     u.put(v);
-//     if(c>1)u<<c;
-//     c=1;}
-//     v=k;
-//     }
+    //     if (k==v)c++;
+    //     else{
+    //         if((v>='0'&&v<='9')||v=='\\')u<<'\\';
+    //         u.put(v);
+    //         if(c>1)u<<c;
+    //     c=1;}
+    // v=k;
+    // }
 // }
 // #include <fstream>
 // int main(){std::ifstream i("1.txt");std::ofstream u("2.txt");int c=1;char k,v;i.get(v);while (i.get(k)){if (k==v)c++;else{if((v>='0'&&v<='9')||v=='\\')u<<'\\';u.put(v);if(c>1)u<<c;c=1;}v=k;}}
