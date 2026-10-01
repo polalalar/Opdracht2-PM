@@ -7,7 +7,9 @@ using namespace std;
 
 // Print een infoblokje op het scherm
 void infoblokje( ) {
-    cout << "Makers        | Jens van der Linden | Thijmen Rosenbrand"
+    cout << "--------------------------------------------------------"
+         << endl
+         << "Makers        | Jens van der Linden | Thijmen Rosenbrand"
          << endl 
          << "--------------------------------------------------------"
          << endl
@@ -30,6 +32,8 @@ void infoblokje( ) {
 
 // Bereken de collatzserie voor een nummer
 int collatz(int nummer){
+    // Note: output moet laten zien bij welke herhaling int_max overschreden word
+    
     int herhalingen = 0;
     while (nummer != 1){
         herhalingen += 1;
@@ -58,70 +62,92 @@ void outputCounter( int counter, ofstream &output , int &outputFileSize) {
 // Note: 
 void outputData( int fileLines, int inputFileSize, 
                  int outputFileSize ) {
+    int compressionRate = ((double)(outputFileSize)/(double)(inputFileSize))*100+0.5;
     cout << "Grootte invoerfile " << inputFileSize << " karakters."
          << endl;
     cout << "Grootte uitvoerfile: " << outputFileSize << " karakters."
          << endl;
-    int compresionRate = (outputFileSize*100)/(inputFileSize*100)*100;
-    
-    cout << "Compressie-ratio " << compresionRate << "%; " 
+    cout << "Compressie-ratio "
+         << compressionRate << "%; " 
          << fileLines << " regels." << endl;
 } // outputData
 
 // Codeer de inputfile naar de outputfile
 void encode( ifstream &input, ofstream &output ) {
-    // Note: comments
+    // Variabele voor het aantal herhaalde karakters
     int karakterCounter = 0;
+
+    // Variabelen voor huidig en vorig karakter
     char karakter = input.get();
     char vorigKarakter = karakter;
 
-
+    // Variable voor het getal waarvoor collatz moet worden berekend
     int collatzGetal = 0;
 
-    int inputFileSize = 1;
+    // Variabele voor aantal herhalingen om collatz te berekenen
+    int collatzHerhalingen = 0;
+
+    // Variabelen voor bestandgrootte
+    int inputFileSize = 0;
+    // +1 voor de get die al gebruikt is // Note:
+    // -1 voor de laatste get, die geen karakter vind maar wel nog +1 doet
     int outputFileSize = 0;
+
+    // Variabele voor aantal regels in bestand
     int fileLines = 0;
     
-
+    // Codeer-loop (+filesize, filelines en collatz)
     while (!input.eof()) {
+        // File lines
         if (karakter == '\n') {
             fileLines++;
         } // if
-        if (karakter == vorigKarakter) {
-            karakterCounter++;
-            if (karakter >= '0' && karakter <= '9'){ // Getal
-                collatzGetal *= 10;
-                collatzGetal += karakter - '0';
+
+        // Collatz
+        if (karakter >= '0' && karakter <= '9') { // Getal - collatz
+            collatzGetal *= 10;
+            collatzGetal += karakter - '0';
+        } // if
+        else if (collatzGetal > 0) {
+            collatzHerhalingen = collatz(collatzGetal);
+            if (collatzHerhalingen == -1) {
+                cout << "Voor " << collatzGetal << 
+                " wordt de waarde groter dan INT_MAX!" << endl;
             } // if
+            else {
+                cout << "Voor " << collatzGetal << " waren er " 
+                << collatzHerhalingen << 
+                " iteraties nodig om op 1 uit te komen!" << endl;
+            } // else
+            collatzGetal = 0;
+        } // else if
+
+        // Encode
+        if (karakter == vorigKarakter && vorigKarakter != '\n') {
+            karakterCounter++;
         } // if
         else {
-            if (vorigKarakter == '\\') { // Backslash
-                output.put('\\');
-                outputFileSize++;
-            } // if
-            if (karakter >= '0' && karakter <= '9') { // Getal
-                collatzGetal *= 10;
-                collatzGetal += karakter - '0';
+            if (vorigKarakter == '\\' || (
+                vorigKarakter >= '0' && vorigKarakter <= '9')) 
+            { // Speciaal karakter
                 output.put('\\');
                 outputFileSize++;
             } // if
             output.put(vorigKarakter);
+            outputFileSize++;
             if (karakterCounter > 1) {
                 outputCounter(karakterCounter, output, outputFileSize);
             } // if
-            outputFileSize++;
             karakterCounter = 1;
         } // else
         vorigKarakter = karakter;
         karakter = input.get();
         inputFileSize++;
     } // while
-    output.put(vorigKarakter);
-    outputFileSize += 2; // last character + EOF char
-    
-    inputFileSize -= fileLines;
-    outputFileSize -= fileLines;
-    fileLines++;
+
+    // Voeg het laatste karakter toe aan de output
+    output.put(vorigKarakter); // is altijd \n volgens aannames Note:
+    outputFileSize += 1; // laatste karakter
 
     outputData(fileLines, inputFileSize, outputFileSize);
 } // encode
@@ -132,10 +158,32 @@ void encode( ifstream &input, ofstream &output ) {
 //     // print n keer karakter
 // } // decode
 
+
+void testrun() {
+    ifstream simpelinput ("simpelinput.txt", ios::in);
+    ofstream simpeloutput ("simpeltestoutput.txt", ios::out);
+
+    ifstream moeilijkinput ("moeilijkinput.txt", ios::in);
+    ofstream moeilijkoutput ("moeilijktestoutput.txt", ios::out);
+
+    cout << "----------< Simpel >----------" << endl;
+    encode(simpelinput, simpeloutput);
+
+    cout << endl << endl << endl;
+    cout << "----------< Moeilijk >----------" << endl;
+    encode(moeilijkinput, moeilijkoutput);
+} // testrun
+
+
+
 // main
 int main ( ) {
 
     infoblokje();
+
+    testrun();
+    return 1;
+
 
     char antwoord = ' ';
     cout << "Wil je een bestand coderen(C) of decoderen(D)?" << endl;
@@ -145,14 +193,11 @@ int main ( ) {
     string inputFile = "";
     string outputFile = "";
 
-    inputFile = "simpelinput.txt";
-    outputFile = "testoutput.txt";
+    cout << "Wat is de naam van de input file?" << endl << "> ";
+    cin >> inputFile;
 
-    // cout << "Wat is de naam van de input file?" << endl << "> ";
-    // cin >> inputFile;
-
-    // cout << "Wat is de naam van de output file?" << endl << "> ";
-    // cin >> outputFile;
+    cout << "Wat is de naam van de output file?" << endl << "> ";
+    cin >> outputFile;
 
     ifstream input (inputFile, ios::in);
     ofstream output (outputFile, ios::out);
