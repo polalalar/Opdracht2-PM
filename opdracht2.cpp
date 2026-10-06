@@ -152,11 +152,41 @@ void encode( ifstream &input, ofstream &output ) {
     outputData(fileLines, inputFileSize, outputFileSize);
 } // encode
 
-// // Decodeer de inputfile naar de outputfile
-// void decode( ifstream &input, ofstream &output ) {
-//     // lees volgende karakter
-//     // print n keer karakter
-// } // decode
+// Decodeer de inputfile naar de outputfile
+void decode( ifstream &input, ofstream &output ) {
+    // lees volgende karakter
+    // print n keer karakter
+    char karakter = input.get();
+    char vorigKarakter = karakter;
+
+    // int inputFileSize = 0;
+    // int outputFileSize = 0;
+
+    int karakterCounter = -1;
+
+    while (!input.eof()) {
+
+        if (karakter >= '0' && karakter <= '9'){
+            karakterCounter *= 10;
+            karakterCounter += karakter - '0';
+        }
+        else if (karakterCounter > 0){
+            for (int i = 0; i<karakterCounter; i++){
+                output.put(vorigKarakter);
+            }
+            karakterCounter = 0;
+            vorigKarakter = karakter;
+        }else{
+            if (karakterCounter >= 0){
+               output.put(vorigKarakter); 
+            }
+            karakterCounter = 0;
+            vorigKarakter = karakter;
+        }
+        
+        karakter = input.get();
+    }
+} // decode
 
 
 void testrun() {
@@ -166,12 +196,28 @@ void testrun() {
     ifstream moeilijkinput ("moeilijkinput.txt", ios::in);
     ofstream moeilijkoutput ("moeilijktestoutput.txt", ios::out);
 
-    cout << "----------< Simpel >----------" << endl;
+    cout << "----------< Encode Simpel >----------" << endl;
     encode(simpelinput, simpeloutput);
 
     cout << endl << endl << endl;
-    cout << "----------< Moeilijk >----------" << endl;
+    cout << "----------< Encode Moeilijk >----------" << endl;
     encode(moeilijkinput, moeilijkoutput);
+
+    simpelinput.close();
+    simpeloutput.close();
+
+    moeilijkinput.close();
+    moeilijkoutput.close();
+
+    ifstream simpelinputdecode ("simpeloutput.txt", ios::in);
+    ofstream simpeloutputdecode ("simpeltestoutput.txt", ios::out);
+
+
+    cout << "----------< Decode Simpel >----------" << endl;
+    decode(simpelinputdecode, simpeloutputdecode);
+
+    simpelinputdecode.close();
+    simpeloutputdecode.close();
 } // testrun
 
 
