@@ -50,6 +50,10 @@ int collatz(int nummer){
     return herhalingen;
 }
 
+bool isGetal(char karakter) {
+    return karakter >= '0' && karakter <= '9';
+}
+
 // Output de counter naar de uitvoerfile
 void outputCounter( int counter, ofstream &output , int &outputFileSize) {
     if (counter >= 10) {
@@ -104,7 +108,7 @@ void encode( ifstream &input, ofstream &output ) {
         } // if
 
         // Collatz
-        if (karakter >= '0' && karakter <= '9') { // Getal - collatz
+        if (isGetal(karakter)) { // Getal - collatz
             collatzGetal *= 10;
             collatzGetal += karakter - '0';
         } // if
@@ -127,8 +131,7 @@ void encode( ifstream &input, ofstream &output ) {
             karakterCounter++;
         } // if
         else {
-            if (vorigKarakter == '\\' || (
-                vorigKarakter >= '0' && vorigKarakter <= '9')) 
+            if (vorigKarakter == '\\' || isGetal(karakter)) 
             { // Speciaal karakter
                 output.put('\\');
                 outputFileSize++;
@@ -154,38 +157,59 @@ void encode( ifstream &input, ofstream &output ) {
 
 // Decodeer de inputfile naar de outputfile
 void decode( ifstream &input, ofstream &output ) {
-    // lees volgende karakter
-    // print n keer karakter
+    // Variabele voor huidig karakter
     char karakter = input.get();
     char vorigKarakter = karakter;
+    char huidigKarakter = 'b';
 
-    // int inputFileSize = 0;
-    // int outputFileSize = 0;
-
+    // Counter voor 
     int karakterCounter = -1;
 
-    while (!input.eof()) {
 
-        if (karakter >= '0' && karakter <= '9'){
-            karakterCounter *= 10;
-            karakterCounter += karakter - '0';
+    while (!input.eof()) {
+        // Backslashes
+        if (karakter == '\\') {
+            if (huidigKarakter == '\\') {
+                output.put(huidigKarakter);
+                huidigKarakter = 'a';
+            }
+            else if (vorigKarakter == '\\') {
+                huidigKarakter = '\\';
+            }
         }
-        else if (karakterCounter > 0){
-            for (int i = 0; i<karakterCounter; i++){
+
+        // Getallen / einde getallenreeks
+        else if (isGetal(karakter)) {
+            if (vorigKarakter == '\\' && huidigKarakter != '\\') {
+                huidigKarakter = karakter;
+            }
+            else if (!isGetal(vorigKarakter)) {
+                huidigKarakter = vorigKarakter;
+            }
+            else {
+                karakterCounter = karakterCounter*10 + karakter - '0';
+            } // else
+        } // if
+        else if (karakterCounter > 0) {
+            for (int i=0; i<karakterCounter; i++){
+                output.put(huidigKarakter);
+            } // for
+            karakterCounter = 0;
+        } // else if
+
+        // Normale karakters
+        else {
+            if (karakterCounter == -1) {
+                karakterCounter = 0;
+            } // if
+            else {
                 output.put(vorigKarakter);
-            }
-            karakterCounter = 0;
-            vorigKarakter = karakter;
-        }else{
-            if (karakterCounter >= 0){
-               output.put(vorigKarakter); 
-            }
-            karakterCounter = 0;
-            vorigKarakter = karakter;
-        }
-        
+            } // else
+        } // else
+        vorigKarakter = karakter;
         karakter = input.get();
-    }
+    } // while
+    output.put('\n'); // Newline voor EOF (als vermeld in opdracht)
 } // decode
 
 
@@ -196,35 +220,33 @@ void testrun() {
     ifstream moeilijkinput ("moeilijkinput.txt", ios::in);
     ofstream moeilijkoutput ("moeilijktestoutput.txt", ios::out);
 
-    cout << "----------< Encode Simpel >----------" << endl;
-    encode(simpelinput, simpeloutput);
+    ifstream simpeldecode ("simpeloutput.txt", ios::in);
+    ifstream moeilijkdecode ("moeilijkoutput.txt", ios::in);
+
+    // cout << "==========< Encode > =========" << endl << endl;
+    // cout << "----------< Simpel >----------" << endl;
+    // encode(simpelinput, simpeloutput);
+
+    // cout << endl << endl << endl;
+    // cout << "----------< Moeilijk >----------" << endl;
+    // encode(moeilijkinput, moeilijkoutput);
+
+    cout << "==========< Decode > =========" << endl << endl;
+    cout << "----------< Simpel >----------" << endl;
+    decode(simpeldecode, simpeloutput);
 
     cout << endl << endl << endl;
-    cout << "----------< Encode Moeilijk >----------" << endl;
-    encode(moeilijkinput, moeilijkoutput);
+    cout << "----------< Moeilijk >----------" << endl;
+    decode(moeilijkdecode, moeilijkoutput);
 
-    simpelinput.close();
     simpeloutput.close();
-
-    moeilijkinput.close();
     moeilijkoutput.close();
-
-    ifstream simpelinputdecode ("simpeloutput.txt", ios::in);
-    ofstream simpeloutputdecode ("simpeltestoutput.txt", ios::out);
-
-
-    cout << "----------< Decode Simpel >----------" << endl;
-    decode(simpelinputdecode, simpeloutputdecode);
-
-    simpelinputdecode.close();
-    simpeloutputdecode.close();
 } // testrun
 
 
 
 // main
-int main ( ) {
-
+int main () {
     infoblokje();
 
     testrun();
@@ -258,56 +280,6 @@ int main ( ) {
         cout << endl;
         // decode(input, output);
     } // else if
-
-/*    
-    int karakterCounter = 0;
-    char karakter = invoer.get();
-    char vorigKarakter = karakter;
-    uitvoer.put(karakter);
-    int collatzGetal = 0;
-    int regels = 0;
-
-    while (!invoer.eof()) {
-        if (karakter == vorigKarakter) {
-            karakterCounter++;
-            if (karakter >= '0' && karakter <= '9'){ // Speciaal karakter
-                collatzGetal *= 10;
-                collatzGetal += karakter - '0';
-            } // if
-        } // if
-        else {
-            if (karakter == '\n'){
-            regels++;
-            } // if
-            if (vorigKarakter == '\\') {
-                uitvoer.put('\\');
-            } // if
-            if (karakterCounter > 1) {
-                outputGetal(karakterCounter, uitvoer);
-            } // if
-            if (karakter >= '0' && karakter <= '9') { // Speciaal karakter
-                collatzGetal *= 10;
-                collatzGetal += karakter - '0';
-                uitvoer.put('\\');
-            } // if
-            else if (collatzGetal > 0) {
-                int herhalingen = collatz(collatzGetal);
-                if (herhalingen == -1) {
-                    cout << "Voor " << collatzGetal << " wordt de waarde groter dan INT_MAX!" << endl;
-                } // if
-                else {
-                    cout << "Voor " << collatzGetal << " waren er " << herhalingen << " iteraties nodig om op 1 uit te komen!" << endl;
-                } // if
-                collatzGetal = 0;
-            } // else if
-            uitvoer.put(karakter);
-            karakterCounter = 1;
-        } // else
-        vorigKarakter = karakter;
-        karakter = invoer.get();
-    } // while
-*/
-
     input.close();
     output.close();
 
