@@ -1,34 +1,14 @@
-Deze file bevat geen cijfers, en ook geen backslashes.
-
-De Universiteit Leiden, ooit opgericht, is een van 
-Europa's meest vooraanstaande internationale 
-onderzoeksuniversiteiten (een wc-eendje). De universiteit heeft zeven 
-faculteiten in het alfa-, beta- en gammadomein, is gevestigd 
-in Leiden en Den Haag en heeft veel medewerkers en veel
-studenten. 
-
-Haar motto is Praesidium Libertatis - Bolwerk van Vrijheid.
-
-
-
-En dit: yyyyyyyyyyyyyyyyyyyyyy of ttttttt of
-of                                 of hhhhhhhhhh
-of %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% of $$$
-of zelfs ((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((?
-
-Allemaal gelukt?
-
 Moeilijke testfile
-Hier staan wel cijfers en backslashes in.
+Hier sta2n wel cijfers en backslashes in.
 
-Kijk maar: 12345 1111 7&6***888ppp1024kkk27yyy
+Kijk ma2r:\ \1\2\3\45\ 14\ 7\&6\*383\p3\1\0\24\k3\27y3
 
-En erg lang duurt 6171!
-Vervelend: 77671, 704511 en 270271.
+En erg lang du2rt\ \6\1\71!
+Vervelend:\ \72\6\71,\ \7\0\4\512 en\ \2\7\0\2\71.
 
-Of lastiger: \abc of zelfs \123 of \\ of
-nog vervelender: \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ of zoiets.
+Of lastiger: \\abc of zelfs \\\1\23 of \\2 of
+nog vervelender: \\35 of zoiets.
 
-Uit de opgave: ABC11123ddd\efG\\\1
+Uit de opgave: AB\C\13\23d3\\efG\\31
 
-En deze: 2147483647 of 2147483640
+En deze:\ \2\1\4\7\4\8\3\6\47 of\ \2\1\4\7\4\8\3\6\40

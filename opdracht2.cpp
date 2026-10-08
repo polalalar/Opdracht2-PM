@@ -155,63 +155,59 @@ void encode( ifstream &input, ofstream &output ) {
     outputData(fileLines, inputFileSize, outputFileSize);
 } // encode
 
-// Decodeer de inputfile naar de outputfile
+//V2
 void decode( ifstream &input, ofstream &output ) {
-    // Variabele voor huidig karakter
     char karakter = input.get();
     char vorigKarakter = karakter;
-    char huidigKarakter = 'b';
-
-    // Counter voor 
-    int karakterCounter = -1;
-
+    int karakterCounter = 0;
+    bool dubbelSlash = false;
 
     while (!input.eof()) {
-        // Backslashes
-        if (karakter == '\\') {
-            if (huidigKarakter == '\\') {
-                output.put(huidigKarakter);
-                huidigKarakter = 'a';
-            }
-            else if (vorigKarakter == '\\') {
-                huidigKarakter = '\\';
-            }
-        }
 
-        // Getallen / einde getallenreeks
-        else if (isGetal(karakter)) {
-            if (vorigKarakter == '\\' && huidigKarakter != '\\') {
-                huidigKarakter = karakter;
+        if (isGetal(karakter) && ((vorigKarakter != '\\') || dubbelSlash) ){
+            if (karakterCounter == -1){
+                karakterCounter = karakter - '0';
+            }else{
+                karakterCounter = karakterCounter * 10 + karakter - '0';
             }
-            else if (!isGetal(vorigKarakter)) {
-                huidigKarakter = vorigKarakter;
-            }
-            else {
-                karakterCounter = karakterCounter*10 + karakter - '0';
-            } // else
-        } // if
-        else if (karakterCounter > 0) {
-            for (int i=0; i<karakterCounter; i++){
-                output.put(huidigKarakter);
-            } // for
-            karakterCounter = 0;
-        } // else if
 
-        // Normale karakters
-        else {
-            if (karakterCounter == -1) {
-                karakterCounter = 0;
-            } // if
-            else {
+        }else{
+        
+            if (karakterCounter == -1){karakterCounter = 1;}
+
+            if (vorigKarakter == '\\' && karakter != '\\'){
+                if (dubbelSlash){
+                   dubbelSlash = false;
+                   karakterCounter--; 
+               }else{
+                    karakterCounter = -1;
+               }
+                
+                
+               
+            }
+
+            if (vorigKarakter == '\\' && karakter == '\\'){
+                if (dubbelSlash){
+                    dubbelSlash = false;
+                    karakterCounter--;
+                }else{
+                    dubbelSlash = true;
+                }
+                
+            }
+            
+            for (int i=0; i < karakterCounter; i++){
+                cout << "PUT" << vorigKarakter << endl;
                 output.put(vorigKarakter);
-            } // else
-        } // else
-        vorigKarakter = karakter;
+            }
+            
+            karakterCounter = -1;
+            vorigKarakter = karakter;
+        }
         karakter = input.get();
-    } // while
-    output.put('\n'); // Newline voor EOF (als vermeld in opdracht)
-} // decode
-
+    }
+}
 
 void testrun() {
     ifstream simpelinput ("simpelinput.txt", ios::in);
@@ -235,9 +231,9 @@ void testrun() {
     cout << "----------< Simpel >----------" << endl;
     decode(simpeldecode, simpeloutput);
 
-    cout << endl << endl << endl;
-    cout << "----------< Moeilijk >----------" << endl;
-    decode(moeilijkdecode, moeilijkoutput);
+    // cout << endl << endl << endl;
+    // cout << "----------< Moeilijk >----------" << endl;
+    // decode(moeilijkdecode, moeilijkoutput);
 
     simpeloutput.close();
     moeilijkoutput.close();
@@ -250,7 +246,6 @@ int main () {
     infoblokje();
 
     testrun();
-    return 1;
 
 
     char antwoord = ' ';
