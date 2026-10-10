@@ -30,10 +30,12 @@ void infoblokje( ) {
     cout << endl << endl;
 } // infoblokje
 
-// Bereken de collatzserie voor een nummer
+//Berekent de collatzserie voor een nummer
+//Volgt het collatz vermoeden (3x+1 of /2)
+//Als het groter wordt dan INT_MAX, dan returned het een min getal.
+//Daardoor weet de functie aanroeper hoeveel heralingen ervoor nodig waren,
+//om op 1 of > INT_MAX te komen.
 int collatz(int nummer){
-    // Note: output moet laten zien bij welke herhaling int_max overschreden word
-    
     int herhalingen = 0;
     while (nummer != 1){
         herhalingen += 1;
@@ -41,8 +43,13 @@ int collatz(int nummer){
             nummer /= 2;
         } // if
         else { // oneven
-            if (nummer >= ((INT_MAX - 1)/ 3)+1){//Doing (x-1)/y + 1 makes the outcome ceil(x/y)
-                return -1 * herhalingen;//Return a negative number when it isn't possible
+            //Als je 2 getal wilt delen door elkaar en dan omhoog wil afronden kan je dit doen:
+            //(x-1)/y + 1.
+            //Dat doe ik ook voor int max, er staat 2x een -1.
+            //De andere is omdat de formule 3x + 1 is.
+            //Dus moet er ook 1 vanaf.
+            if (nummer >= (INT_MAX - 1 - 1)/ 3 + 1){
+                return -1 * herhalingen;//Min getal voor als het groter of gelijk wordt.
             }
             nummer = nummer * 3 + 1;
         } // else
@@ -50,6 +57,7 @@ int collatz(int nummer){
     return herhalingen;
 }
 
+//Returned of iets een getal is volgens ASCII.
 bool isGetal(char karakter) {
     return karakter >= '0' && karakter <= '9';
 }
@@ -63,7 +71,9 @@ void outputCounter( int counter, ofstream &output , int &outputFileSize) {
     outputFileSize++;
 } // outputCounter
 
-// Note: 
+//Geeft de informatie van fileSize + Compressie ratio.
+//Compressie ratio is output/input * 100
+//En +0.5 zodat het naar boven afrond.
 void outputData( int fileLines, int inputFileSize, 
                  int outputFileSize ) {
     int compressionRate = ((double)(outputFileSize)/(double)(inputFileSize))*100+0.5;
@@ -164,6 +174,9 @@ void decode( ifstream &input, ofstream &output ) {
 
     while (!input.eof()) {
 
+        //condition zodat als het karakter een getal is de if gedaan wordt,
+        //Mits het of geen \\ is of dat er geen dubbelSlash is.
+        //Als het \5 is, dan moet de 5 geprint worden en niet als zoveel keer \.
         if (isGetal(karakter) && ((vorigKarakter != '\\') || dubbelSlash) ){
             //-1 is zodat
             if (karakterCounter == -1){
@@ -173,16 +186,16 @@ void decode( ifstream &input, ofstream &output ) {
             }
 
         }else{
-        
-            if (karakterCounter == -1){karakterCounter = 1;}
+            //Stel het leest een d in en een e daarna,
+            //Dan moet de d gewoon 1 keer geprint worden.
+            if (karakterCounter == -1){
+                karakterCounter = 1;
+            }
 
+            //Dit is nodig voor als er \5 staat de \ niet geprint wordt maar de 5 wel.
             if (vorigKarakter == '\\' && karakter != '\\'){
-                //Voor het geval dat er \\\5 staat dan leest het 2x een dubbel slash,
-                //De eerste keer dat er een dubbel staat moet dat een \ neerzetten,
-                //En daarna een 5 erbij omdat er \5 staat.
                 if (dubbelSlash){
                    dubbelSlash = false;
-                   //1 eraf omdat bij \\ er al 1 keer een '\''geprint was.
                    karakterCounter--; 
                }else{
                     //-1 zorgt er voor dat het karakter niet geprint wordt.
@@ -192,10 +205,13 @@ void decode( ifstream &input, ofstream &output ) {
                 
                
             }
-            //De dubbelSlash zorgt ervoor dat het mogelijk is om van \\5 -> \\\\\ te maken.
+            //Voor het geval dat er \\\5 staat dan leest het 2x een dubbel slash,
+            //De eerste keer dat er een dubbel staat moet dat een \ neerzetten,
+            //En daarna een 5 erbij omdat er \5 staat.
             if (vorigKarakter == '\\' && karakter == '\\'){
                 if (dubbelSlash){
                     dubbelSlash = false;
+                    //1 eraf omdat bij \\ er al 1 keer een '\''geprint was.
                     karakterCounter--;
                 }else{
                     dubbelSlash = true;
@@ -253,6 +269,7 @@ void testrun() {
 
 // main
 int main () {
+    //Print het infoblokje
     infoblokje();
 
     testrun();
@@ -261,7 +278,6 @@ int main () {
     char antwoord = ' ';
     cout << "Wil je een bestand coderen(C) of decoderen(D)?" << endl;
     cin >> antwoord;
-    // Check voor valide input? (c/C/d/D)
 
     string inputFile = "";
     string outputFile = "";
@@ -278,15 +294,17 @@ int main () {
     // Coderen
     if (antwoord == 'c' || antwoord == 'C'){
         encode(input, output);
+        cout << "Succes, de file is encoded!" << endl;
     } // if
 
     // Decoderen
     else if (antwoord == 'd' || antwoord == 'D'){
-        cout << endl;
-        // decode(input, output);
+        decode(input, output);
+        cout << "Succes, de file is decoded!" << endl;
     } // else if
     input.close();
     output.close();
+
 
 
 
