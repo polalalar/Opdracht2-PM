@@ -3,10 +3,15 @@
 #include <climits>
 using namespace std;
 
-// Note: function vs varable names guidelines?
+// Opdracht 2 - Programmeermethoden - (De)coderen
+// Makers: Jens van der Linden & Thijmen Rosenbrand
+// Studentnummers: s5205212 & s5225752
+// Compiled met: g++ 13.3.0
+// Versie: 1.0
+// Laatste wijziging op: 10-10-2026
 
 // Print een infoblokje op het scherm
-void infoblokje( ) {
+void infoblokje() {
     cout << "--------------------------------------------------------"
          << endl
          << "Makers        | Jens van der Linden | Thijmen Rosenbrand"
@@ -30,64 +35,67 @@ void infoblokje( ) {
     cout << endl << endl;
 } // infoblokje
 
-//Berekent de collatzserie voor een nummer
-//Volgt het collatz vermoeden (3x+1 of /2)
-//Als het groter wordt dan INT_MAX, dan returned het een min getal.
-//Daardoor weet de functie aanroeper hoeveel heralingen ervoor nodig waren,
-//om op 1 of > INT_MAX te komen.
-int collatz(int nummer){
+// Berekent het aantal nodige herhalingen voor een nummer om via het 
+// collatz vermoeden op 1 uit te komen of groter dan INT_MAX te worden
+int collatz(int nummer) {
+    // Aantal stappen/herhalingen van het vermoeden
     int herhalingen = 0;
-    while (nummer != 1){
+
+    while (nummer != 1) {
         herhalingen += 1;
-        if (nummer % 2 == 0){//even
+        if (nummer % 2 == 0) { // even
             nummer /= 2;
         } // if
         else { // oneven
-            //Als je 2 getal wilt delen door elkaar en dan omhoog wil afronden kan je dit doen:
-            //(x-1)/y + 1.
-            //Dat doe ik ook voor int max, er staat 2x een -1.
-            //De andere is omdat de formule 3x + 1 is.
-            //Dus moet er ook 1 vanaf.
-            if (nummer >= (INT_MAX - 1 - 1)/ 3 + 1){
-                return -1 * herhalingen;//Min getal voor als het groter of gelijk wordt.
-            }
+            // Om omhoog af te ronden na delen wordt (x-1)/y + 1
+            // gebruikt.
+            // Het omgekeerde van ((num * 3) + 1) is ((num - 1) / 3)
+            // Dit wordt gedaan, omdat num anders groter wordt dan
+            // INT_MAX, wat voor problemen zorgt.
+            if (nummer >= (((INT_MAX - 1) - 1) / 3) + 1) { // te groot
+                // Negatief getal als het groter wordt dan INT_MAX.
+                return -1 * herhalingen;
+            } // if
             nummer = nummer * 3 + 1;
         } // else
     } // while
     return herhalingen;
-}
+} // collatz
 
-//Returned of iets een getal is volgens ASCII.
-bool isGetal(char karakter) {
+// Returnt of iets een getal is volgens ASCII.
+bool isCijfer(char karakter) {
     return karakter >= '0' && karakter <= '9';
-}
+} // isCijfer
 
-// Output de counter naar de uitvoerfile
-void outputCounter( int counter, ofstream &output , int &outputFileSize) {
-    if (counter >= 10) {
-        outputCounter((counter/10), output, outputFileSize);
+// Output een nummer naar de uitvoerfile
+// Updatet ook de filegrootte
+void outputGetal(int getal, ofstream &output, int &outputFileGrootte) {
+    if (getal >= 10) {
+        outputGetal((getal/10), output, outputFileGrootte);
     } // if
-    output.put('0' + (counter%10));
-    outputFileSize++;
-} // outputCounter
+    output.put('0' + (getal%10));
+    outputFileGrootte++;
+} // outputGetal
 
-//Geeft de informatie van fileSize + Compressie ratio.
-//Compressie ratio is output/input * 100
-//En +0.5 zodat het naar boven afrond.
-void outputData( int fileLines, int inputFileSize, 
-                 int outputFileSize ) {
-    int compressionRate = ((double)(outputFileSize)/(double)(inputFileSize))*100+0.5;
-    cout << "Grootte invoerfile " << inputFileSize << " karakters."
+// Print data over de compressie:
+// Grootte invoer- & uitvoerfile + compressie-ratio
+void outputData(int fileLines, int inputFileGrootte, 
+                int outputFileGrootte) {
+    // Berekening in doubles om fouten in afronding te voorkomen
+    int compressieRatio = ((double)(outputFileGrootte)/
+                           (double)(inputFileGrootte)
+                           )*100+0.5;
+    cout << "Grootte invoerfile " << inputFileGrootte << " karakters."
          << endl;
-    cout << "Grootte uitvoerfile: " << outputFileSize << " karakters."
+    cout << "Grootte uitvoerfile: " << outputFileGrootte << " karakters."
          << endl;
     cout << "Compressie-ratio "
-         << compressionRate << "%; " 
+         << compressieRatio << "%; " 
          << fileLines << " regels." << endl;
 } // outputData
 
 // Codeer de inputfile naar de outputfile
-void encode( ifstream &input, ofstream &output ) {
+void codeer( ifstream &input, ofstream &output ) {
     // Variabele voor het aantal herhaalde karakters
     int karakterCounter = 0;
 
@@ -101,16 +109,14 @@ void encode( ifstream &input, ofstream &output ) {
     // Variabele voor aantal herhalingen om collatz te berekenen
     int collatzHerhalingen = 0;
 
-    // Variabelen voor bestandgrootte
-    int inputFileSize = 0;
-    // +1 voor de get die al gebruikt is // Note:
-    // -1 voor de laatste get, die geen karakter vind maar wel nog +1 doet
-    int outputFileSize = 0;
+    // Variabelen voor bestandgrootte van input-/outputfile
+    int inputFileGrootte = 0;
+    int outputFileGrootte = 0;
 
     // Variabele voor aantal regels in bestand
     int fileLines = 0;
     
-    // Codeer-loop (+filesize, filelines en collatz)
+    // Codeer-loop (+fileGrootte, filelines en collatz)
     while (!input.eof()) {
         // File lines
         if (karakter == '\n') {
@@ -118,7 +124,7 @@ void encode( ifstream &input, ofstream &output ) {
         } // if
 
         // Collatz
-        if (isGetal(karakter)) { // Getal - collatz
+        if (isCijfer(karakter)) {
             collatzGetal *= 10;
             collatzGetal += karakter - '0';
         } // if
@@ -126,7 +132,8 @@ void encode( ifstream &input, ofstream &output ) {
             collatzHerhalingen = collatz(collatzGetal);
             if (collatzHerhalingen <= -1) {
                 cout << "Voor " << collatzGetal << 
-                " wordt de waarde na " << collatzHerhalingen * -1 << " iteraties groter dan INT_MAX!" << endl;
+                " wordt de waarde na " << collatzHerhalingen * -1 << 
+                " iteraties groter dan INT_MAX!" << endl;
             } // if
             else {
                 cout << "Voor " << collatzGetal << " waren er " 
@@ -136,151 +143,138 @@ void encode( ifstream &input, ofstream &output ) {
             collatzGetal = 0;
         } // else if
 
-        // Encode
+        // Codeer
         if (karakter == vorigKarakter && vorigKarakter != '\n') {
             karakterCounter++;
         } // if
         else {
-            if (vorigKarakter == '\\' || isGetal(karakter)) 
-            { // Speciaal karakter
+            if (vorigKarakter == '\\' || isCijfer(vorigKarakter)) {
                 output.put('\\');
-                outputFileSize++;
+                outputFileGrootte++;
             } // if
             output.put(vorigKarakter);
-            outputFileSize++;
+            outputFileGrootte++;
             if (karakterCounter > 1) {
-                outputCounter(karakterCounter, output, outputFileSize);
+                outputGetal(karakterCounter, output, outputFileGrootte);
+                karakterCounter = 1;
             } // if
-            karakterCounter = 1;
         } // else
         vorigKarakter = karakter;
         karakter = input.get();
-        inputFileSize++;
+        inputFileGrootte++;
     } // while
 
     // Voeg het laatste karakter toe aan de output
-    output.put(vorigKarakter); // is altijd \n volgens aannames Note:
-    outputFileSize += 1; // laatste karakter
+    output.put('\n'); // is altijd \n volgens uitleg opdracht
+    outputFileGrootte += 1; // laatste karakter
 
-    outputData(fileLines, inputFileSize, outputFileSize);
-} // encode
+    outputData(fileLines, inputFileGrootte, outputFileGrootte);
+} // codeer
 
-//V2
-void decode( ifstream &input, ofstream &output ) {
+// Decodeer de inputfile naar de outputfile
+void decodeer(ifstream &input, ofstream &output) {
+    // Variabelen voor huidig en vorig karakter
     char karakter = input.get();
     char vorigKarakter = '\n';
+
+    // Variabele voor het aantal herhalende karakters (t31 => 31)
+    // Als deze kleiner is dan 0, wordt er niets geprint
     int karakterCounter = 0;
+
+    // Variabele voor wanneer er 2 backslashes zijn
     bool dubbelSlash = false;
 
+    // Decodeer-loop
     while (!input.eof()) {
 
+        // Note: kan weg?
         //condition zodat als het karakter een getal is de if gedaan wordt,
         //Mits het of geen \\ is of dat er geen dubbelSlash is.
         //Als het \5 is, dan moet de 5 geprint worden en niet als zoveel keer \.
-        if (isGetal(karakter) && ((vorigKarakter != '\\') || dubbelSlash) ){
-            //-1 is zodat
-            if (karakterCounter == -1){
+
+        // Lees cijfer als herhaling van vorig karakter ipv karakter
+        if (isCijfer(karakter) && 
+            ((vorigKarakter != '\\') || dubbelSlash) ) {
+            // Eerste cijfer
+            if (karakterCounter == -1) {
                 karakterCounter = karakter - '0';
-            }else{
-                karakterCounter = karakterCounter * 10 + karakter - '0';
-            }
-
-        }else{
-            //Stel het leest een d in en een e daarna,
-            //Dan moet de d gewoon 1 keer geprint worden.
-            if (karakterCounter == -1){
+            } // if
+            else {
+                karakterCounter = karakterCounter*10 + karakter - '0';
+            } // else
+        } // if
+        else {
+            // Reset voor het volgende karakter
+            if (karakterCounter == -1) {
                 karakterCounter = 1;
-            }
+            } // if
 
-            //Dit is nodig voor als er \5 staat de \ niet geprint wordt maar de 5 wel.
-            if (vorigKarakter == '\\' && karakter != '\\'){
-                if (dubbelSlash){
+            // Note: relevant?
+            // Dit is nodig voor als er \5 staat de \ niet geprint wordt maar de 5 wel.
+            if (vorigKarakter == '\\' && karakter != '\\') {
+                if (dubbelSlash) {
                    dubbelSlash = false;
+
+                   // Vorige \ is al geprint, dus print deze niet
                    karakterCounter--; 
-               }else{
-                    //-1 zorgt er voor dat het karakter niet geprint wordt.
+                } // if
+                else {
+                    // Print de \ niet
+                    // Het volgende karakter moet een cijfer zijn dat
+                    // gelezen moet worden als karakter ipv herhaling
                     karakterCounter = -1;
-               }
-                
-                
-               
-            }
+               } // else
+            } // if
+
+            // Note: relevant?
             //Voor het geval dat er \\\5 staat dan leest het 2x een dubbel slash,
             //De eerste keer dat er een dubbel staat moet dat een \ neerzetten,
             //En daarna een 5 erbij omdat er \5 staat.
-            if (vorigKarakter == '\\' && karakter == '\\'){
-                if (dubbelSlash){
+
+            if (vorigKarakter == '\\' && karakter == '\\') {
+                if (dubbelSlash) {
                     dubbelSlash = false;
-                    //1 eraf omdat bij \\ er al 1 keer een '\''geprint was.
+
+                    // Vorige \ is al geprint, dus print deze niet
                     karakterCounter--;
-                }else{
+                } // if
+                else {
                     dubbelSlash = true;
-                }
-                
-            }
-            
-            //Output het eerdere karakter "karakterCounte" keer.
-            for (int i=0; i < karakterCounter; i++){
-                cout << "PUT" << vorigKarakter << endl;
+                } // else
+            } // if
+
+            // Output het eerdere karakter "karakterCounter" keer.
+            for (int i=0; i < karakterCounter; i++) {
                 output.put(vorigKarakter);
-            }
+            } // for
             
+            // Geeft aan dat het vorige karakter geen getal was
             karakterCounter = -1;
-            //Alleen updaten als het karakter geen getal is.
-            //Omdat bij a23, je de a wilt onthouden,
-            //en dan 23 keer wilt printen.
+
+            // Niet doen bij getallen die herhaling aangeven (1e if)
             vorigKarakter = karakter;
-        }
+        } // else
         karakter = input.get();
-    }
-}
+    } // while
 
-void testrun() {
-    ifstream simpelinput ("simpelinput.txt", ios::in);
-    ofstream simpeloutput ("simpeltestoutput.txt", ios::out);
-
-    ifstream moeilijkinput ("moeilijkinput.txt", ios::in);
-    ofstream moeilijkoutput ("moeilijktestoutput.txt", ios::out);
-
-    ifstream simpeldecode ("simpeloutput.txt", ios::in);
-    ifstream moeilijkdecode ("moeilijkoutput.txt", ios::in);
-
-    // cout << "==========< Encode > =========" << endl << endl;
-    // cout << "----------< Simpel >----------" << endl;
-    // encode(simpelinput, simpeloutput);
-
-    // cout << endl << endl << endl;
-    // cout << "----------< Moeilijk >----------" << endl;
-    // encode(moeilijkinput, moeilijkoutput);
-
-    cout << "==========< Decode > =========" << endl << endl;
-    cout << "----------< Simpel >----------" << endl;
-    decode(simpeldecode, simpeloutput);
-
-    // cout << endl << endl << endl;
-    // cout << "----------< Moeilijk >----------" << endl;
-    // decode(moeilijkdecode, moeilijkoutput);
-
-    simpeloutput.close();
-    moeilijkoutput.close();
-} // testrun
-
-
+    // Voeg het laatste karakter toe aan de output
+    output.put(vorigKarakter); // is altijd \n volgens uitleg opdracht    
+} // decodeer
 
 // main
 int main () {
-    //Print het infoblokje
-    infoblokje();
-
-    testrun();
-
-
+    // Variabele voor coderen of decoderen
     char antwoord = ' ';
-    cout << "Wil je een bestand coderen(C) of decoderen(D)?" << endl;
-    cin >> antwoord;
 
+    // Variabelen voor naam input- & outputfile
     string inputFile = "";
     string outputFile = "";
+
+    // Print het infoblokje
+    infoblokje();
+    
+    cout << "Wil je een bestand coderen(C) of decoderen(D)?" << endl;
+    cin >> antwoord;
 
     cout << "Wat is de naam van de input file?" << endl << "> ";
     cin >> inputFile;
@@ -288,25 +282,31 @@ int main () {
     cout << "Wat is de naam van de output file?" << endl << "> ";
     cin >> outputFile;
 
+    // Maak fstream voor input en output
     ifstream input (inputFile, ios::in);
     ofstream output (outputFile, ios::out);
 
     // Coderen
-    if (antwoord == 'c' || antwoord == 'C'){
-        encode(input, output);
-        cout << "Succes, de file is encoded!" << endl;
+    if (antwoord == 'c' || antwoord == 'C') {
+        codeer(input, output);
+        cout << "Succes, de file is gecodeerd!" << endl;
     } // if
 
     // Decoderen
-    else if (antwoord == 'd' || antwoord == 'D'){
-        decode(input, output);
-        cout << "Succes, de file is decoded!" << endl;
+    else if (antwoord == 'd' || antwoord == 'D') {
+        decodeer(input, output);
+        cout << "Succes, de file is gedecodeerd!" << endl;
     } // else if
+
+    // Foute input
+    else {
+        cout << "Dit is geen valide antwoord! (gebruik 'C' of 'D')" 
+             << endl;
+    } // else
+
+    // Sluit de input/outputfile
     input.close();
     output.close();
-
-
-
 
     return 0;
 } // main
