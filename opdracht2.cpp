@@ -165,6 +165,7 @@ void decode( ifstream &input, ofstream &output ) {
     while (!input.eof()) {
 
         if (isGetal(karakter) && ((vorigKarakter != '\\') || dubbelSlash) ){
+            //-1 is zodat
             if (karakterCounter == -1){
                 karakterCounter = karakter - '0';
             }else{
@@ -176,17 +177,22 @@ void decode( ifstream &input, ofstream &output ) {
             if (karakterCounter == -1){karakterCounter = 1;}
 
             if (vorigKarakter == '\\' && karakter != '\\'){
+                //Voor het geval dat er \\\5 staat dan leest het 2x een dubbel slash,
+                //De eerste keer dat er een dubbel staat moet dat een \ neerzetten,
+                //En daarna een 5 erbij omdat er \5 staat.
                 if (dubbelSlash){
                    dubbelSlash = false;
+                   //1 eraf omdat bij \\ er al 1 keer een '\''geprint was.
                    karakterCounter--; 
                }else{
+                    //-1 zorgt er voor dat het karakter niet geprint wordt.
                     karakterCounter = -1;
                }
                 
                 
                
             }
-
+            //De dubbelSlash zorgt ervoor dat het mogelijk is om van \\5 -> \\\\\ te maken.
             if (vorigKarakter == '\\' && karakter == '\\'){
                 if (dubbelSlash){
                     dubbelSlash = false;
@@ -197,12 +203,16 @@ void decode( ifstream &input, ofstream &output ) {
                 
             }
             
+            //Output het eerdere karakter "karakterCounte" keer.
             for (int i=0; i < karakterCounter; i++){
                 cout << "PUT" << vorigKarakter << endl;
                 output.put(vorigKarakter);
             }
             
             karakterCounter = -1;
+            //Alleen updaten als het karakter geen getal is.
+            //Omdat bij a23, je de a wilt onthouden,
+            //en dan 23 keer wilt printen.
             vorigKarakter = karakter;
         }
         karakter = input.get();
