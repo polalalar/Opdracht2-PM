@@ -1,4 +1,4 @@
-Moeilijke testfile
+\\\5Moeilijke testfile
 Hier sta2n wel cijfers en backslashes in.
 
 Kijk ma2r: \1\2\3\4\5 \14 \7&\6*3\83p3\1\0\2\4k3\2\7y3
@@ -12,3 +12,4 @@ nog vervelender: \\35 of zoiets.
 Uit de opgave: ABC\13\2\3d3\\efG\\3\1
 
 En deze: \2\1\4\7\4\8\3\6\4\7 of \2\1\4\7\4\8\3\6\4\0
+

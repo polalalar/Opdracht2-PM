@@ -158,7 +158,7 @@ void encode( ifstream &input, ofstream &output ) {
 //V2
 void decode( ifstream &input, ofstream &output ) {
     char karakter = input.get();
-    char vorigKarakter = karakter;
+    char vorigKarakter = '\n';
     int karakterCounter = 0;
     bool dubbelSlash = false;
 
